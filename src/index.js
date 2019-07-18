@@ -1,6 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+// 导入 antd-mobile 的样式文件
+import 'antd-mobile/dist/antd-mobile.css'
+
 // 导入根组件
 import App from './App'
 
