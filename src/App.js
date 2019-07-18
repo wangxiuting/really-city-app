@@ -26,6 +26,7 @@ const App = () => {
         </ul>
 
         {/* 首页： */}
+        {/* 外层路由，用来渲染整个 Home 页面 */}
         <Route path="/home" component={Home} />
         {/* 城市选择页面： */}
         <Route path="/citylist" component={CityList} />
