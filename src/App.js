@@ -16,15 +16,6 @@ const App = () => {
   return (
     <Router>
       <div className="app">
-        <ul>
-          <li>
-            <Link to="/home">首页</Link>
-          </li>
-          <li>
-            <Link to="/citylist">城市选择</Link>
-          </li>
-        </ul>
-
         {/* 首页： */}
         {/* 外层路由，用来渲染整个 Home 页面 */}
         <Route path="/home" component={Home} />
