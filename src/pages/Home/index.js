@@ -17,8 +17,15 @@ import Profile from '../Profile'
 // 导入样式
 import './index.css'
 
+// 菜单项数据：
+const TABBARLIST = [
+  { title: '首页', icon: 'icon-ind', path: '/home' },
+  { title: '找房', icon: 'icon-findHouse', path: '/home/list' },
+  { title: '资讯', icon: 'icon-infom', path: '/home/news' },
+  { title: '我的', icon: 'icon-my', path: '/home/profile' }
+]
+
 export default class Home extends React.Component {
-  // 2 拷贝状态
   state = {
     // 指定当前选中的 tab 菜单
     selectedTab: this.props.location.pathname,
@@ -28,86 +35,39 @@ export default class Home extends React.Component {
     fullScreen: true
   }
 
+  // 渲染底部TabBar菜单项
+  renderTabBarItems = () => {
+    return TABBARLIST.map(item => (
+      <TabBar.Item
+        title={item.title}
+        key={item.path}
+        icon={<i className={`iconfont ${item.icon}`} />}
+        selectedIcon={<i className={`iconfont ${item.icon}`} />}
+        selected={this.state.selectedTab === item.path}
+        onPress={() => {
+          this.props.history.push(item.path)
+
+          this.setState({
+            selectedTab: item.path
+          })
+        }}
+      />
+    ))
+  }
+
   render() {
     return (
       <div className="home">
-        <Route path="/home/index" component={Index} />
+        {/* 去掉了 /index ，但是，要给 Index 组件的路由规则添加 exact 属性 */}
+        <Route exact path="/home" component={Index} />
         <Route path="/home/list" component={HouseList} />
         <Route path="/home/news" component={News} />
         <Route path="/home/profile" component={Profile} />
 
         {/* TabBar 组件的示例代码： */}
         <div className="tabbar">
-          {/* 
-            unselectedTintColor 指定：未选中 tabbar 菜单的文字颜色
-            tintColor 指定：选中 tabbar 菜单的文字颜色
-            barTintColor 指定：tabbar 的背景色
-          */}
           <TabBar tintColor="#21B97A" noRenderContent={true}>
-            {/* 
-              title 指定：当前 tabbar 菜单项的标题
-              icon 指定：当前 tabbar 菜单项的图标
-              selectedIcon 指定：当前 tabbar 菜单项选中的图标
-              selected 指定：当前菜单项是否选中
-              onPress 指定：单击事件
-              badge 指定：徽标数
-            */}
-            <TabBar.Item
-              title="首页"
-              key="Life"
-              icon={<i className="iconfont icon-ind" />}
-              selectedIcon={<i className="iconfont icon-ind" />}
-              selected={this.state.selectedTab === '/home/index'}
-              onPress={() => {
-                this.props.history.push('/home/index')
-
-                this.setState({
-                  selectedTab: '/home/index'
-                })
-              }}
-            />
-            <TabBar.Item
-              icon={<i className="iconfont icon-findHouse" />}
-              selectedIcon={<i className="iconfont icon-findHouse" />}
-              title="找房"
-              key="Koubei"
-              selected={this.state.selectedTab === '/home/list'}
-              onPress={() => {
-                this.props.history.push('/home/list')
-
-                this.setState({
-                  selectedTab: '/home/list'
-                })
-              }}
-            />
-            <TabBar.Item
-              icon={<i className="iconfont icon-infom" />}
-              selectedIcon={<i className="iconfont icon-infom" />}
-              title="资讯"
-              key="Friend"
-              selected={this.state.selectedTab === '/home/news'}
-              onPress={() => {
-                this.props.history.push('/home/news')
-
-                this.setState({
-                  selectedTab: '/home/news'
-                })
-              }}
-            />
-            <TabBar.Item
-              icon={<i className="iconfont icon-my" />}
-              selectedIcon={<i className="iconfont icon-my" />}
-              title="我的"
-              key="my"
-              selected={this.state.selectedTab === '/home/profile'}
-              onPress={() => {
-                this.props.history.push('/home/profile')
-
-                this.setState({
-                  selectedTab: '/home/profile'
-                })
-              }}
-            />
+            {this.renderTabBarItems()}
           </TabBar>
         </div>
       </div>
