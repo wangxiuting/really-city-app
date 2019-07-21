@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Carousel, Flex } from 'antd-mobile'
+import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile'
 
 import { Link } from 'react-router-dom'
 
@@ -15,8 +15,20 @@ import nav2 from '../../assets/images/nav-2.png'
 import nav3 from '../../assets/images/nav-3.png'
 import nav4 from '../../assets/images/nav-4.png'
 
+// 九宫格临时数据
+// const data = Array.from(new Array(4)).map((_val, i) => ({
+//   icon: 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
+//   text: `name${i}`
+// }))
+
 export default class Index extends React.Component {
   state = {
+    // 最新资讯
+    news: [],
+
+    // 租房小组数据
+    groups: [],
+
     // 轮播图图片数据
     swipers: [],
     // 设置图片高度
@@ -39,8 +51,32 @@ export default class Index extends React.Component {
     })
   }
 
+  // 获取租房小组数据
+  async getGroup() {
+    const res = await axios.get(
+      'http://localhost:8080/home/groups?area=AREA%7C88cff55c-aaa4-e2e0'
+    )
+
+    this.setState({
+      groups: res.data.body
+    })
+  }
+
+  // 获取最新资讯
+  async getNews() {
+    const res = await axios.get(
+      'http://localhost:8080/home/news?area=AREA%7C88cff55c-aaa4-e2e0'
+    )
+
+    this.setState({
+      news: res.data.body
+    })
+  }
+
   componentDidMount() {
     this.getSwipers()
+    this.getGroup()
+    this.getNews()
   }
 
   // 渲染轮播图数据
@@ -72,6 +108,28 @@ export default class Index extends React.Component {
           }}
         />
       </a>
+    ))
+  }
+
+  // 渲染最新资讯
+  renderNews() {
+    return this.state.news.map(item => (
+      <div className="news-item" key={item.id}>
+        <div className="imgwrap">
+          <img
+            className="img"
+            src={`http://localhost:8080${item.imgSrc}`}
+            alt=""
+          />
+        </div>
+        <Flex className="content" direction="column" justify="between">
+          <h3 className="title">{item.title}</h3>
+          <Flex className="info" justify="between">
+            <span>{item.from}</span>
+            <span>{item.date}</span>
+          </Flex>
+        </Flex>
+      </div>
     ))
   }
 
@@ -114,6 +172,46 @@ export default class Index extends React.Component {
             </Link>
           </Flex.Item>
         </Flex>
+
+        {/* 租房小组： */}
+        <div className="groups">
+          {/* 标题 */}
+          <Flex justify="between" className="groups-title">
+            <h3>租房小组</h3>
+            <span>更多</span>
+          </Flex>
+          {/* 
+            使用九宫格来实现布局
+
+            data 表示：九宫格的数据源
+            activeStyle 表示：每个菜单项的点击反馈
+           */}
+          <Grid
+            className="grid"
+            data={this.state.groups}
+            columnNum={2}
+            hasLine={false}
+            square={false}
+            activeStyle
+            renderItem={item => (
+              <Flex className="grid-item" justify="between">
+                <div>
+                  <p>{item.title}</p>
+                  <span>{item.desc}</span>
+                </div>
+                <div>
+                  <img src={`http://localhost:8080${item.imgSrc}`} alt="" />
+                </div>
+              </Flex>
+            )}
+          />
+        </div>
+
+        {/* 最新资讯 */}
+        <div className="news">
+          <h3 className="group-title">最新资讯</h3>
+          <WingBlank size="md">{this.renderNews()}</WingBlank>
+        </div>
       </div>
     )
   }
