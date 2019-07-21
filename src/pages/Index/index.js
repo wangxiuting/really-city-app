@@ -138,6 +138,22 @@ export default class Index extends React.Component {
       <div className="index">
         {/* 当轮播图数据加载的过程中，不渲染轮播图组件；当数据加载完成后，再渲染轮播图组件 */}
         <div className="swiper">
+          {/* 首页顶部导航： */}
+          <Flex className="search-box">
+            <Flex className="search-left">
+              <div className="location">
+                <span>上海</span>
+                <i className="iconfont icon-arrow" />
+              </div>
+
+              <div className="search-form">
+                <i className="iconfont icon-seach" />
+                <span>请输入小区或地址</span>
+              </div>
+            </Flex>
+            <i className="iconfont icon-map" />
+          </Flex>
+
           {this.state.isSwiperLoading ? null : (
             <Carousel autoplay={true} infinite autoplayInterval={5000}>
               {this.renderSwipers()}
