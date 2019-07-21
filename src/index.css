@@ -17,6 +17,13 @@ body {
   touch-action: pan-y;
 }
 
+html,
+body,
+#root,
+.app {
+  height: 100%;
+}
+
 p,
 h3 {
   margin: 0;

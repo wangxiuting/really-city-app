@@ -77,6 +77,13 @@ export default class Index extends React.Component {
     this.getSwipers()
     this.getGroup()
     this.getNews()
+
+    // 使用 H5 中的地理位置API，来获取当前用户所在的地理位置
+    navigator.geolocation.getCurrentPosition(position => {
+      // postion 对象中，常用属性的文档：
+      // https://developer.mozilla.org/zh-CN/docs/Web/API/Coordinates
+      console.log('当前位置信息：', position)
+    })
   }
 
   // 渲染轮播图数据
@@ -141,17 +148,26 @@ export default class Index extends React.Component {
           {/* 首页顶部导航： */}
           <Flex className="search-box">
             <Flex className="search-left">
-              <div className="location">
+              <div
+                className="location"
+                onClick={() => this.props.history.push('/citylist')}
+              >
                 <span>上海</span>
                 <i className="iconfont icon-arrow" />
               </div>
 
-              <div className="search-form">
+              <div
+                className="search-form"
+                onClick={() => this.props.history.push('/search')}
+              >
                 <i className="iconfont icon-seach" />
                 <span>请输入小区或地址</span>
               </div>
             </Flex>
-            <i className="iconfont icon-map" />
+            <i
+              className="iconfont icon-map"
+              onClick={() => this.props.history.push('/map')}
+            />
           </Flex>
 
           {this.state.isSwiperLoading ? null : (

@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 // 导入页面组件
 import Home from './pages/Home'
 import CityList from './pages/CityList'
+import Map from './pages/Map'
 
 // 创建App组件
 const App = () => {
@@ -38,6 +39,8 @@ const App = () => {
         <Route path="/home" component={Home} />
         {/* 城市选择页面： */}
         <Route path="/citylist" component={CityList} />
+        {/* 地图找房页面 */}
+        <Route path="/map" component={Map} />
       </div>
     </Router>
   )
