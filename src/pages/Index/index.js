@@ -21,6 +21,8 @@ import nav4 from '../../assets/images/nav-4.png'
 //   text: `name${i}`
 // }))
 
+const BMap = window.BMap
+
 export default class Index extends React.Component {
   state = {
     // 最新资讯
@@ -35,7 +37,10 @@ export default class Index extends React.Component {
     imgHeight: 212,
 
     // 表示轮播图是否加载中
-    isSwiperLoading: true
+    isSwiperLoading: true,
+
+    // 当前城市名称
+    cityName: '上海'
   }
 
   // 获取轮播图数据
@@ -78,12 +83,36 @@ export default class Index extends React.Component {
     this.getGroup()
     this.getNews()
 
+    // 通过百度地图获取当前城市信息
+    const myCity = new BMap.LocalCity()
+    myCity.get(async result => {
+      // 百度地图提供的当前城市名称
+      const cityName = result.name
+
+      // 调用接口，换取我们项目中的有房源城市信息
+      const res = await axios.get('http://localhost:8080/area/info', {
+        params: {
+          name: cityName
+        }
+      })
+
+      // console.log('接口返回的城市信息：', res)
+      const { label, value } = res.data.body
+
+      this.setState({
+        cityName: label
+      })
+
+      // 将获取到的当前城市，保存到本地缓存中
+      localStorage.setItem('hkzf_city', JSON.stringify({ label, value }))
+    })
+
     // 使用 H5 中的地理位置API，来获取当前用户所在的地理位置
-    navigator.geolocation.getCurrentPosition(position => {
+    /* navigator.geolocation.getCurrentPosition(position => {
       // postion 对象中，常用属性的文档：
       // https://developer.mozilla.org/zh-CN/docs/Web/API/Coordinates
       console.log('当前位置信息：', position)
-    })
+    }) */
   }
 
   // 渲染轮播图数据
@@ -152,7 +181,7 @@ export default class Index extends React.Component {
                 className="location"
                 onClick={() => this.props.history.push('/citylist')}
               >
-                <span>上海</span>
+                <span>{this.state.cityName}</span>
                 <i className="iconfont icon-arrow" />
               </div>
 
