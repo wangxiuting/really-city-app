@@ -15,11 +15,8 @@ import nav2 from '../../assets/images/nav-2.png'
 import nav3 from '../../assets/images/nav-3.png'
 import nav4 from '../../assets/images/nav-4.png'
 
-// 九宫格临时数据
-// const data = Array.from(new Array(4)).map((_val, i) => ({
-//   icon: 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
-//   text: `name${i}`
-// }))
+// 导入获取定位城市方法
+import { getCurrentCity } from '../../utils'
 
 const BMap = window.BMap
 
@@ -78,41 +75,15 @@ export default class Index extends React.Component {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getSwipers()
     this.getGroup()
     this.getNews()
 
-    // 通过百度地图获取当前城市信息
-    const myCity = new BMap.LocalCity()
-    myCity.get(async result => {
-      // 百度地图提供的当前城市名称
-      const cityName = result.name
-
-      // 调用接口，换取我们项目中的有房源城市信息
-      const res = await axios.get('http://localhost:8080/area/info', {
-        params: {
-          name: cityName
-        }
-      })
-
-      // console.log('接口返回的城市信息：', res)
-      const { label, value } = res.data.body
-
-      this.setState({
-        cityName: label
-      })
-
-      // 将获取到的当前城市，保存到本地缓存中
-      localStorage.setItem('hkzf_city', JSON.stringify({ label, value }))
+    const { label } = await getCurrentCity()
+    this.setState({
+      cityName: label
     })
-
-    // 使用 H5 中的地理位置API，来获取当前用户所在的地理位置
-    /* navigator.geolocation.getCurrentPosition(position => {
-      // postion 对象中，常用属性的文档：
-      // https://developer.mozilla.org/zh-CN/docs/Web/API/Coordinates
-      console.log('当前位置信息：', position)
-    }) */
   }
 
   // 渲染轮播图数据
