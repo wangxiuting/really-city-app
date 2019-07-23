@@ -22,9 +22,6 @@ const getCurrentCity = () => {
             name: result.name
           }
         })
-
-        console.log('当前城市信息：', res)
-
         const { label, value } = res.data.body
 
         // 使用resolve暴露当前城市数据

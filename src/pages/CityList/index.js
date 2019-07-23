@@ -2,6 +2,9 @@ import React from 'react'
 
 import { NavBar } from 'antd-mobile'
 
+// 导入 react-virtualized 组件
+import { List } from 'react-virtualized'
+
 import axios from 'axios'
 
 // 导入获取定位城市数据的方法
@@ -45,6 +48,27 @@ const formatCityList = list => {
     cityList,
     cityIndex
   }
+}
+
+// 数据源：
+const list = Array.from(new Array(100000)).map(
+  (item, index) => `${index} - react-virtualized 组件列表项`
+)
+
+// 渲染每一行的方法
+function rowRenderer({
+  key, // 每一项的唯一标识
+  index, // 每一行的索引号
+  isScrolling, // 表示当前行是否正在滚动，如果是滚动结果为true；否则，为false
+  isVisible, // 当前列表项是否可见
+  style // Style object to be applied to row (to position it)
+}) {
+  // 注意：千万不要忘记给每一行元素设置 style 样式，来动态指定虚拟列表中的位置
+  return (
+    <div key={key} style={style}>
+      {list[index]} -- {isScrolling + ''} -- {isVisible + ''}
+    </div>
+  )
 }
 
 export default class CityList extends React.Component {
@@ -103,6 +127,15 @@ export default class CityList extends React.Component {
         >
           城市选择
         </NavBar>
+
+        {/* 城市列表： */}
+        <List
+          width={375}
+          height={300}
+          rowCount={list.length}
+          rowHeight={20}
+          rowRenderer={rowRenderer}
+        />
       </div>
     )
   }
