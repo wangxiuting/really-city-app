@@ -4,6 +4,9 @@ import { NavBar } from 'antd-mobile'
 
 import axios from 'axios'
 
+// 导入获取定位城市数据的方法
+import { getCurrentCity } from '../../utils'
+
 import './index.scss'
 
 // 封装一个函数专门用来处理城市列表数据
@@ -45,6 +48,13 @@ const formatCityList = list => {
 }
 
 export default class CityList extends React.Component {
+  state = {
+    // 城市列表数据（按字母顺序分类）
+    cityList: {},
+    // 城市索引列表
+    cityIndex: []
+  }
+
   componentDidMount() {
     this.fetchCityList()
   }
@@ -64,7 +74,22 @@ export default class CityList extends React.Component {
     cityIndex.unshift('hot')
     cityList['hot'] = hotRes.data.body
 
-    console.log(cityList, cityIndex)
+    // 获取当前定位城市
+    // const curCity = getCurrentCity((label, value) => {})
+    // curCity => { label, value }
+
+    // curCity => { label: '', value: '' }
+    const curCity = await getCurrentCity()
+
+    // 添加当前定位城市
+    cityIndex.unshift('#')
+    cityList['#'] = [curCity]
+
+    // console.log(cityList, cityIndex)
+    this.setState({
+      cityList,
+      cityIndex
+    })
   }
 
   render() {
