@@ -74,11 +74,21 @@ export default class CityList extends React.Component {
     // 城市列表数据（按字母顺序分类）
     cityList: {},
     // 城市索引列表
-    cityIndex: []
+    cityIndex: [],
+
+    // 右侧索引高亮索引号
+    activeIndex: 0
   }
 
-  componentDidMount() {
-    this.fetchCityList()
+  // 创建 ref 对象，用来获取 List 组件实例
+  listRef = React.createRef()
+
+  async componentDidMount() {
+    await this.fetchCityList()
+
+    // 调用 List 组件的方法，来提前计算出每一行的高度。为右侧城市索引跳转城市列表打好基础
+    // 注意：该方法需要等到数据加载后，再执行，才能计算出列表中每一行的高度
+    this.listRef.current.measureAllRows()
   }
 
   // 获取城市列表数据
@@ -108,10 +118,17 @@ export default class CityList extends React.Component {
     cityList['#'] = [curCity]
 
     // console.log(cityList, cityIndex)
-    this.setState({
-      cityList,
-      cityIndex
-    })
+    this.setState(
+      {
+        cityList,
+        cityIndex
+      }
+      // ,
+      // () => {
+      //   // 调用 List 组件的方法，来提前计算出每一行的高度。为右侧城市索引跳转城市列表打好基础
+      //   // this.listRef.current.measureAllRows()
+      // }
+    )
   }
 
   // 渲染每一行的方法
@@ -156,6 +173,43 @@ export default class CityList extends React.Component {
     // return 100
   }
 
+  // 根据城市索引，跳转到指定索引号的列
+  goToCityIndex = index => {
+    // console.log('当前索引号为：', index, this.listRef)
+    // 通过 ref 来拿到组件实例，然后，调用 scrollToRow 方法，将当前索引号作为参数传递
+    // 文档：https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md#scrolltorow-index-number
+    this.listRef.current.scrollToRow(index)
+  }
+
+  // 渲染右侧索引列表
+  renderCityIndex() {
+    const { cityIndex, activeIndex } = this.state
+
+    return cityIndex.map((item, index) => (
+      <li
+        className="city-index-item"
+        key={item}
+        onClick={() => this.goToCityIndex(index)}
+      >
+        {/* 高亮类名： index-active */}
+        <span className={index === activeIndex ? 'index-active' : ''}>
+          {item === 'hot' ? '热' : item.toUpperCase()}
+        </span>
+      </li>
+    ))
+  }
+
+  // List 组件滚动时，会触发该方法
+  onRowsRendered = ({ startIndex }) => {
+    // console.log('startIndex：', startIndex)
+    // 添加判断：判断当前 state 中的高亮索引 和 startIndex 是否相同，如果不相同再改变
+    if (this.state.activeIndex !== startIndex) {
+      this.setState({
+        activeIndex: startIndex
+      })
+    }
+  }
+
   render() {
     return (
       <div className="citylist">
@@ -172,14 +226,20 @@ export default class CityList extends React.Component {
         <AutoSizer>
           {({ width, height }) => (
             <List
+              ref={this.listRef}
               width={width}
               height={height}
               rowCount={this.state.cityIndex.length}
               rowHeight={this.calcRowHeight}
               rowRenderer={this.rowRenderer}
+              onRowsRendered={this.onRowsRendered}
+              scrollToAlignment="start"
             />
           )}
         </AutoSizer>
+
+        {/* 右侧城市索引列表 */}
+        <ul className="city-index">{this.renderCityIndex()}</ul>
       </div>
     )
   }

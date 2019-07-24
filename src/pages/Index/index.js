@@ -18,8 +18,6 @@ import nav4 from '../../assets/images/nav-4.png'
 // 导入获取定位城市方法
 import { getCurrentCity } from '../../utils'
 
-const BMap = window.BMap
-
 export default class Index extends React.Component {
   state = {
     // 最新资讯
