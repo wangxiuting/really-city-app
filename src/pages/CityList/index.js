@@ -50,26 +50,24 @@ const formatCityList = list => {
   }
 }
 
-// 数据源：
-const list = Array.from(new Array(100000)).map(
-  (item, index) => `${index} - react-virtualized 组件列表项`
-)
+// 封装一个函数专门用来处理城市列表索引名称
+const formatCityIndex = letter => {
+  switch (letter) {
+    case '#':
+      return '当前定位'
 
-// 渲染每一行的方法
-function rowRenderer({
-  key, // 每一项的唯一标识
-  index, // 每一行的索引号
-  isScrolling, // 表示当前行是否正在滚动，如果是滚动结果为true；否则，为false
-  isVisible, // 当前列表项是否可见
-  style // Style object to be applied to row (to position it)
-}) {
-  // 注意：千万不要忘记给每一行元素设置 style 样式，来动态指定虚拟列表中的位置
-  return (
-    <div key={key} style={style}>
-      {list[index]} -- {isScrolling + ''} -- {isVisible + ''}
-    </div>
-  )
+    case 'hot':
+      return '热门城市'
+
+    default:
+      return letter.toUpperCase()
+  }
 }
+
+// 索引高度
+const INDEX_HEIGHT = 36
+// 城市名称高度
+const CITY_NAME_HEIGHT = 50
 
 export default class CityList extends React.Component {
   state = {
@@ -116,6 +114,48 @@ export default class CityList extends React.Component {
     })
   }
 
+  // 渲染每一行的方法
+  // 注意：方法中 this 指向的问题
+  rowRenderer = ({ key, index, style }) => {
+    // 每条数据中，索引只有一个；城市名称可能是有多个；
+    // 所以，需要遍历生成对应索引下的所有城市列表
+    // console.log(this)
+    const { cityIndex, cityList } = this.state
+
+    // 字母索引：
+    const letter = cityIndex[index]
+    // 字母索引对应的城市列表数据
+    const list = cityList[letter]
+
+    return (
+      <div key={key} style={style} className="city">
+        <div className="title">{formatCityIndex(letter)}</div>
+        {list.map(item => (
+          <div key={item.value} className="name">
+            {item.label}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // 动态计算每一行的高度
+  calcRowHeight = ({ index }) => {
+    // console.log('动态计算每一行的高度：', index)
+    const { cityIndex, cityList } = this.state
+
+    // 字母索引：
+    const letter = cityIndex[index]
+    // 字母索引对应的城市列表数据
+    const list = cityList[letter]
+
+    // 公式： 索引高度 + 城市名称高度 * 数量
+    // 索引高度：36
+    // 城市名称高度：50
+    return INDEX_HEIGHT + CITY_NAME_HEIGHT * list.length
+    // return 100
+  }
+
   render() {
     return (
       <div className="citylist">
@@ -134,9 +174,9 @@ export default class CityList extends React.Component {
             <List
               width={width}
               height={height}
-              rowCount={list.length}
-              rowHeight={20}
-              rowRenderer={rowRenderer}
+              rowCount={this.state.cityIndex.length}
+              rowHeight={this.calcRowHeight}
+              rowRenderer={this.rowRenderer}
             />
           )}
         </AutoSizer>
