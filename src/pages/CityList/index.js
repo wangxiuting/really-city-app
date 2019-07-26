@@ -1,14 +1,17 @@
 import React from 'react'
 
-import { NavBar } from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 
 // 导入 react-virtualized 组件
 import { List, AutoSizer } from 'react-virtualized'
 
 import axios from 'axios'
 
+// 导入 顶部导航栏 组件
+import NavHeader from '../../components/NavHeader'
+
 // 导入获取定位城市数据的方法
-import { getCurrentCity } from '../../utils'
+import { getCurrentCity, setCity } from '../../utils'
 
 import './index.scss'
 
@@ -68,6 +71,8 @@ const formatCityIndex = letter => {
 const INDEX_HEIGHT = 36
 // 城市名称高度
 const CITY_NAME_HEIGHT = 50
+// 有房源的城市列表
+const CITY_HAS_HOUSE = ['北京', '上海', '广州', '深圳']
 
 export default class CityList extends React.Component {
   state = {
@@ -131,12 +136,33 @@ export default class CityList extends React.Component {
     )
   }
 
+  // 切换城市
+  changeCity = ({ label, value }) => {
+    if (CITY_HAS_HOUSE.indexOf(label) > -1) {
+      // 有房源
+      // console.log('有房源')
+      // 保存当前城市信息到本地缓存中
+      setCity({ label, value })
+      // 返回上一页
+      this.props.history.go(-1)
+    } else {
+      // 没有房源
+      // console.log('没有房源')
+      // 有遮罩层：
+      // Toast.info('该城市暂无房源数据', 1)
+      // 没有遮罩层：
+      Toast.info('该城市暂无房源数据', 1, null, false)
+    }
+  }
+
   // 渲染每一行的方法
   // 注意：方法中 this 指向的问题
   rowRenderer = ({ key, index, style }) => {
     // 每条数据中，索引只有一个；城市名称可能是有多个；
     // 所以，需要遍历生成对应索引下的所有城市列表
     // console.log(this)
+    // cityList: { a: [], b: [] }
+    // cityIndex: ['a', 'b', ...]
     const { cityIndex, cityList } = this.state
 
     // 字母索引：
@@ -148,7 +174,11 @@ export default class CityList extends React.Component {
       <div key={key} style={style} className="city">
         <div className="title">{formatCityIndex(letter)}</div>
         {list.map(item => (
-          <div key={item.value} className="name">
+          <div
+            key={item.value}
+            className="name"
+            onClick={() => this.changeCity(item)}
+          >
             {item.label}
           </div>
         ))}
@@ -213,14 +243,7 @@ export default class CityList extends React.Component {
   render() {
     return (
       <div className="citylist">
-        <NavBar
-          className="navbar"
-          mode="light"
-          icon={<i className="iconfont icon-back" />}
-          onLeftClick={() => console.log('onLeftClick')}
-        >
-          城市选择
-        </NavBar>
+        <NavHeader>城市选择</NavHeader>
 
         {/* 城市列表： */}
         <AutoSizer>

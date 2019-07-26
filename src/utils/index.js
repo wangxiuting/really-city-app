@@ -45,4 +45,4 @@ const getCurrentCity = () => {
 // .then()
 // getCurrentCity().then(curCity => {})
 
-export { getCurrentCity }
+export { getCurrentCity, getCity, setCity }
