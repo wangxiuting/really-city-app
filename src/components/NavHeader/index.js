@@ -10,12 +10,12 @@ import { NavBar } from 'antd-mobile'
 import { withRouter } from 'react-router-dom'
 
 // 导入该组件自己的样式
-import './index.scss'
+import styles from './index.module.scss'
 
 function NavHeader({ children, history }) {
   return (
     <NavBar
-      className="navbar"
+      className={styles.navBar}
       mode="light"
       icon={<i className="iconfont icon-back" />}
       onLeftClick={() => history.go(-1)}

@@ -5,6 +5,7 @@ import NavHeader from '../../components/NavHeader'
 
 // 导入样式
 import './index.scss'
+import styles from './index.module.css'
 
 // 注意：如果要在脚手架代码中访问全局对象，应该 通过 window 来访问
 // https://facebook.github.io/create-react-app/docs/using-global-variables
