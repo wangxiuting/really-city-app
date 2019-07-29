@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom'
 // 导入 axios
 import axios from 'axios'
 
+// 导入 SearchHeader 组件
+import SearchHeader from '../../components/SearchHeader'
+
 // 导入样式
 import './index.scss'
 
@@ -140,29 +143,7 @@ export default class Index extends React.Component {
         {/* 当轮播图数据加载的过程中，不渲染轮播图组件；当数据加载完成后，再渲染轮播图组件 */}
         <div className="swiper">
           {/* 首页顶部导航： */}
-          <Flex className="search-box">
-            <Flex className="search-left">
-              <div
-                className="location"
-                onClick={() => this.props.history.push('/citylist')}
-              >
-                <span>{this.state.cityName}</span>
-                <i className="iconfont icon-arrow" />
-              </div>
-
-              <div
-                className="search-form"
-                onClick={() => this.props.history.push('/search')}
-              >
-                <i className="iconfont icon-seach" />
-                <span>请输入小区或地址</span>
-              </div>
-            </Flex>
-            <i
-              className="iconfont icon-map"
-              onClick={() => this.props.history.push('/map')}
-            />
-          </Flex>
+          <SearchHeader cityName={this.state.cityName} />
 
           {this.state.isSwiperLoading ? null : (
             <Carousel autoplay={true} infinite autoplayInterval={5000}>
