@@ -46,3 +46,8 @@ const getCurrentCity = () => {
 // getCurrentCity().then(curCity => {})
 
 export { getCurrentCity, getCity, setCity }
+
+// 导入 url，然后再导出
+export { BASE_URL } from './url'
+// 导入 API，并导入
+export { API } from './api'

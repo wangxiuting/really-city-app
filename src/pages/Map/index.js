@@ -2,13 +2,11 @@ import React from 'react'
 
 import { Toast } from 'antd-mobile'
 
-import axios from 'axios'
-
 // 导入 classnames
 import classNames from 'classnames'
 
 // 导入 获取当前定位城市 方法
-import { getCurrentCity } from '../../utils'
+import { getCurrentCity, BASE_URL, API } from '../../utils'
 
 // 导入 NavHeader 组件
 import NavHeader from '../../components/NavHeader'
@@ -118,7 +116,7 @@ export default class Map extends React.Component {
     // 开启loading
     Toast.loading('加载中...', 0, null, false)
 
-    const res = await axios.get(`http://localhost:8080/area/map`, {
+    const res = await API.get(`/area/map`, {
       params: {
         id
       }
@@ -262,7 +260,7 @@ export default class Map extends React.Component {
   async getCommunityHouses(id) {
     Toast.loading('加载中...', 0, null, false)
     // 获取小区数据
-    const res = await axios.get(`http://localhost:8080/houses`, {
+    const res = await API.get(`/houses`, {
       params: {
         cityId: id
       }
@@ -289,7 +287,7 @@ export default class Map extends React.Component {
         <div className={styles.imgWrap}>
           <img
             className={styles.img}
-            src={`http://localhost:8080${item.houseImg}`}
+            src={`${BASE_URL}${item.houseImg}`}
             alt=""
           />
         </div>

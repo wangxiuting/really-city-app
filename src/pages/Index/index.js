@@ -16,7 +16,7 @@ import nav3 from '../../assets/images/nav-3.png'
 import nav4 from '../../assets/images/nav-4.png'
 
 // 导入获取定位城市方法
-import { getCurrentCity } from '../../utils'
+import { getCurrentCity, BASE_URL } from '../../utils'
 
 export default class Index extends React.Component {
   state = {
@@ -102,7 +102,7 @@ export default class Index extends React.Component {
           每个图片都有一个 onError 事件，在图片加载失败时触发
         */}
         <img
-          src={`http://localhost:8080${item.imgSrc}`}
+          src={`${BASE_URL}${item.imgSrc}`}
           alt=""
           style={{ width: '100%', verticalAlign: 'top' }}
           onLoad={() => {
@@ -121,11 +121,7 @@ export default class Index extends React.Component {
     return this.state.news.map(item => (
       <div className="news-item" key={item.id}>
         <div className="imgwrap">
-          <img
-            className="img"
-            src={`http://localhost:8080${item.imgSrc}`}
-            alt=""
-          />
+          <img className="img" src={`${BASE_URL}${item.imgSrc}`} alt="" />
         </div>
         <Flex className="content" direction="column" justify="between">
           <h3 className="title">{item.title}</h3>
@@ -230,7 +226,7 @@ export default class Index extends React.Component {
                   <span>{item.desc}</span>
                 </div>
                 <div>
-                  <img src={`http://localhost:8080${item.imgSrc}`} alt="" />
+                  <img src={`${BASE_URL}${item.imgSrc}`} alt="" />
                 </div>
               </Flex>
             )}
