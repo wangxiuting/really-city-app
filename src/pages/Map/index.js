@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Toast } from 'antd-mobile'
+
 import axios from 'axios'
 
 // 导入 classnames
@@ -113,11 +115,17 @@ export default class Map extends React.Component {
 
   // 根据id获取下级数据
   async renderOverlays(id) {
+    // 开启loading
+    Toast.loading('加载中...', 0, null, false)
+
     const res = await axios.get(`http://localhost:8080/area/map`, {
       params: {
         id
       }
     })
+
+    // 关闭loading
+    Toast.hide()
 
     const { nextZoom, type } = this.getTypeAndZoom()
 
@@ -229,6 +237,10 @@ export default class Map extends React.Component {
       //
       this.map.panBy(x, y)
 
+      // 这两种方式都是基于整个地图，所有，无法满足我们的需求
+      // this.map.panTo(point)
+      // this.map.centerAndZoom(point, 15)
+
       // 移动该小区到地图可视区域中心
       /* 
         目标位置的Y坐标： (window.innerHeight - 330) / 2
@@ -248,6 +260,7 @@ export default class Map extends React.Component {
 
   // 获取小区的房源数据
   async getCommunityHouses(id) {
+    Toast.loading('加载中...', 0, null, false)
     // 获取小区数据
     const res = await axios.get(`http://localhost:8080/houses`, {
       params: {
@@ -255,7 +268,8 @@ export default class Map extends React.Component {
       }
     })
 
-    console.log('获取到小区下的房源数据：', res)
+    // 关闭loading
+    Toast.hide()
 
     // 展示房源列表
     this.setState({
@@ -267,7 +281,11 @@ export default class Map extends React.Component {
   // 渲染小区里面的房源列表
   renderHouseList() {
     return this.state.houseList.map(item => (
-      <div className={styles.house} key={item.houseCode}>
+      <div
+        className={styles.house}
+        key={item.houseCode}
+        onClick={() => this.props.history.push(`/detail/${item.houseCode}`)}
+      >
         <div className={styles.imgWrap}>
           <img
             className={styles.img}
